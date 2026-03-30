@@ -1,1 +1,30 @@
+name: Build VisionClaw IPA
+on: [push, workflow_dispatch]
 
+jobs:
+  build:
+      runs-on: macos-latest
+      steps:
+            - name: Checkout
+                  - name: Build and Archive
+                          run: |
+                                    xcodebuild archive \
+                                                -project samples/CameraAccess/CameraAccess.xcodeproj \
+                                                            -scheme CameraAccess \
+                                                                        -configuration Release \
+                                                                                    -archivePath ./build/CameraAccess.xcarchive \
+                                                                                                -sdk iphoneos \
+                                                                                                            CODE_SIGNING_ALLOWED=NO
+                                                                                                                  - name: Create IPA
+                                                                                                                          run: |
+                                                                                                                                    mkdir -p Payload
+                                                                                                                                              cp -r ./build/CameraAccess.xcarchive/Products/Applications/*.app ./Payload/
+                                                                                                                                                        zip -r VisionClaw.ipa Payload
+                                                                                                                                                              - name: Upload Artifact
+                                                                                                                                                                      uses: actions/upload-artifact@v4
+                                                                                                                                                                              with:
+                                                                                                                                                                                        name: VisionClaw-IPA
+                                                                                                                                                                                                  path: VisionClaw.ipa
+                                                                                                                                                                                                  
+                    uses: actions/checkout@v4
+                    
